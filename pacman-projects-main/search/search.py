@@ -133,20 +133,42 @@ def depth_first_search(problem):
     print("Start's successors:", problem.get_successors(problem.get_start_state()))
     """
     "*** YOUR CODE HERE ***"
-    from game import Directions
-    print("Start:", problem.get_start_state())
-    print("Is the start a goal?", problem.is_goal_state(problem.get_start_state()))
-    print("Start's successors:", problem.get_successors(problem.get_start_state()))
-    dirs = []
-    passed = []
-    while(True): #nashei
+    start_node = SearchNode(None, (problem.get_start_state(), None, 0))     #Creem el primer node
+    explorat = set()            #Creem un conjunt on guardar els explorats
+    stack = util.Stack()        #Creem la pila
+    stack.push(start_node)      #Posem el primer node a la pila
+    while (stack.is_empty() == False):      #Mentres la pila no estigui buida
+        node = stack.pop()          #Treiem l'últim element posat allà
+        if node.state not in explorat:  #Si l'element no l'hem explorat ja
+            explorat.add(node.state)    #L'afegim a explorats
+            if problem.is_goal_state(node.state):   #Si és el goal state
+                return node.get_path()              #Que retorni les accions que s'ha de fer
+            successors = problem.get_successors(node.state) #Sinó, dona els successors
+            for coord, action, cost in successors:    #Per a cada successor agafem les seves dades
+                if coord not in explorat:             #Si no es troba als explorats
+                    successor_node = SearchNode(node, (coord, action, cost))
+                    stack.push(successor_node)      #El posem a la pila
 
 
 
 def breadth_first_search(problem):
     """Search the shallowest nodes in the search tree first."""
     "*** YOUR CODE HERE ***"
-    util.raise_not_defined()
+    start_node = SearchNode(None, (problem.get_start_state(), None, 0))     #Creem el primer node
+    explorat = set()            #Creem un conjunt on guardar els explorats
+    queue = util.Queue()        #Creem la pila
+    queue.push(start_node)      #Posem el primer node a la pila
+    while (queue.is_empty() == False):      #Mentres la pila no estigui buida
+        node = queue.pop()          #Treiem l'últim element posat allà
+        if node.state not in explorat:  #Si l'element no l'hem explorat ja
+            explorat.add(node.state)    #L'afegim a explorats
+            if problem.is_goal_state(node.state):   #Si és el goal state
+                return node.get_path()              #Que retorni les accions que s'ha de fer
+            successors = problem.get_successors(node.state) #Sinó, dona els successors
+            for coord, action, cost in successors:    #Per a cada successor agafem les seves dades
+                if coord not in explorat:             #Si no es troba als explorats
+                    successor_node = SearchNode(node, (coord, action, cost))
+                    queue.push(successor_node)      #El posem a la pila
 
 def uniform_cost_search(problem):
     """Search the node of least total cost first."""
