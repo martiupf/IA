@@ -148,6 +148,7 @@ def depth_first_search(problem):
                 if coord not in explorat:             #Si no es troba als explorats
                     successor_node = SearchNode(node, (coord, action, cost))
                     stack.push(successor_node)      #El posem a la pila
+    util.raise_not_defined()
 
 
 
@@ -156,9 +157,9 @@ def breadth_first_search(problem):
     "*** YOUR CODE HERE ***"
     start_node = SearchNode(None, (problem.get_start_state(), None, 0))     #Creem el primer node
     explorat = set()            #Creem un conjunt on guardar els explorats
-    queue = util.Queue()        #Creem la pila
-    queue.push(start_node)      #Posem el primer node a la pila
-    while (queue.is_empty() == False):      #Mentres la pila no estigui buida
+    queue = util.Queue()        #Creem una cua
+    queue.push(start_node)      #Posem el primer node a la cua
+    while (queue.is_empty() == False):      #Mentres la cua no estigui buida
         node = queue.pop()          #Treiem l'últim element posat allà
         if node.state not in explorat:  #Si l'element no l'hem explorat ja
             explorat.add(node.state)    #L'afegim a explorats
@@ -168,11 +169,27 @@ def breadth_first_search(problem):
             for coord, action, cost in successors:    #Per a cada successor agafem les seves dades
                 if coord not in explorat:             #Si no es troba als explorats
                     successor_node = SearchNode(node, (coord, action, cost))
-                    queue.push(successor_node)      #El posem a la pila
+                    queue.push(successor_node)      #El posem a la cua
+    util.raise_not_defined()
 
 def uniform_cost_search(problem):
     """Search the node of least total cost first."""
     "*** YOUR CODE HERE ***"
+    start_node = SearchNode(None, (problem.get_start_state(), None, 0))     #Creem el primer node
+    explorat = set()            #Creem un conjunt on guardar els explorats
+    pqueue = util.PriorityQueue()            #Creem una cua de prioritat
+    pqueue.push(start_node, start_node.cost) #Posem el primer node a la cua
+    while (pqueue.is_empty() == False):      #Mentres la cua no estigui buida
+        node = pqueue.pop()             #Treiem l'últim element posat allà
+        if node.state not in explorat:  #Si l'element no l'hem explorat ja
+            explorat.add(node.state)    #L'afegim a explorats
+            if problem.is_goal_state(node.state):   #Si és el goal state
+                return node.get_path()              #Que retorni les accions que s'ha de fer
+            successors = problem.get_successors(node.state) #Sinó, dona els successors
+            for coord, action, cost in successors:    #Per a cada successor agafem les seves dades
+                if coord not in explorat:             #Si no es troba als explorats
+                    successor_node = SearchNode(node, (coord, action, cost))
+                    pqueue.push(successor_node, successor_node.cost)      #El posem a la cua
     util.raise_not_defined()
 
 def null_heuristic(state, problem=None):
