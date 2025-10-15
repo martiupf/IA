@@ -202,6 +202,21 @@ def null_heuristic(state, problem=None):
 def a_star_search(problem, heuristic=null_heuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
     "*** YOUR CODE HERE ***"
+    start_node = SearchNode(None, (problem.get_start_state(), None, 0))     #Creem el primer node
+    explorat = set()            #Creem un conjunt on guardar els explorats
+    pqueue = util.PriorityQueue()            #Creem una cua de prioritat
+    pqueue.push(start_node, start_node.cost+heuristic(start_node.state, problem)) #Posem el primer node a la cua i el cost sumat amb la heurística
+    while (pqueue.is_empty() == False):      #Mentres la cua no estigui buida
+        node = pqueue.pop()             #Treiem l'últim element posat allà
+        if node.state not in explorat:  #Si l'element no l'hem explorat ja
+            explorat.add(node.state)    #L'afegim a explorats
+            if problem.is_goal_state(node.state):   #Si és el goal state
+                return node.get_path()              #Que retorni les accions que s'ha de fer
+            successors = problem.get_successors(node.state) #Sinó, dona els successors
+            for coord, action, cost in successors:    #Per a cada successor agafem les seves dades
+                if coord not in explorat:             #Si no es troba als explorats
+                    successor_node = SearchNode(node, (coord, action, cost))
+                    pqueue.push(successor_node, successor_node.cost+heuristic(coord, problem))      #El posem a la cua amb el cost sumat amb la funció heurística
     util.raise_not_defined()
 
 # Abbreviations
