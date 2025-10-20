@@ -533,13 +533,21 @@ def food_heuristic(state, problem):
     position, food_grid = state
     "*** YOUR CODE HERE ***"
     food_list = food_grid.as_list()
-    min_man = 0
-    for food in food_list:
-        var = util.manhattan_distance(food, position)
-        if (min_man < var):
+    if not food_list:
+        return 0
+    min_man = 10000000
+    max_food_dis = 0
+    for food1 in food_list:
+        var = util.manhattan_distance(food1, position)
+        if(var < min_man):
             min_man = var
-    return min_man
+        for food2 in food_list:
+            var = util.manhattan_distance(food1, food2)
+            if(var > max_food_dis):
+                max_food_dis = var
+    return max_food_dis + min_man
 
+        
 
 def simplified_corners_heuristic(state, problem):
     """
