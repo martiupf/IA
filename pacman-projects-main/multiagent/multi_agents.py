@@ -72,9 +72,22 @@ class ReflexAgent(Agent):
         new_food = successor_game_state.get_food()
         new_ghost_states = successor_game_state.get_ghost_states()
         new_scared_times = [ghostState.scared_timer for ghostState in new_ghost_states]
-        
+        for i in new_food:
+            print(i)
         "*** YOUR CODE HERE ***"
-        return successor_game_state.get_score()
+        distance = 10000
+        x=0
+        for i in new_food:
+            y=0
+            for j in i:
+                if j == True:
+                    a=manhattan_distance(new_pos, (x,y))
+                    if (a<distance):
+                        distance = a
+                y+=1
+            x+=1
+        # print(distance)
+        return successor_game_state.get_score()-distance
 
 def score_evaluation_function(current_game_state):
     """
