@@ -134,6 +134,26 @@ class MinimaxAgent(MultiAgentSearchAgent):
     Your minimax agent (question 2)
     """
 
+    def minimax(self, agent, game_state, depth):
+        if (game_state.is_win() or game_state.is_lose() or depth == self.depth):
+            return self.score_evaluation_function(game_state)
+        actions = game_state.get_legal_actions(agent)
+        nextAgent = agent+1
+        if(nextAgent == game_state.get_num_agents()):
+            nextAgent = 0
+            depth+=1
+        maxScore = float("-inf")
+        minScore = float("inf")
+        for action in actions:
+            successor = game_state.generate_successor(agent, action)
+            score = self.minimax(nextAgent, successor, depth)
+            maxScore = max(score, maxScore)
+            minScore = min(score, minScore)
+        if(agent == 0):
+            return maxScore
+        else:
+            return minScore
+
     def get_action(self, game_state):
         """
         Returns the minimax action from the current game_state using self.depth
@@ -158,28 +178,16 @@ class MinimaxAgent(MultiAgentSearchAgent):
         Returns whether or not the game state is a losing state
         """
         "*** YOUR CODE HERE ***"
-        util.raise_not_defined()
-        agents = game_state.get_num_agents()
-        # pacman
-
-        # for ghosts
-        new_game_state = game_state
-        for i in range(agents):
-            score_min = 10000000
-            score_max = 0
-            for action in game_state.get_legal_actions(i):
-                score = self.evaluation_function(game_state, action)
-                if(score_max < score):
-                    score_max = score
-                    max_action = action
-                if(score_min > score):
-                    score_min = score
-                    min_action = action
-            if(i==0):
-                new_game_state.generate_successor(i, max_action)
-            else:
-                new_game_state.generate_successor(i, min_action)
-        return max_action
+        actions = game_state.get_legal_actions(0)
+        maxScore = float("-inf")
+        for action in actions:
+            new_game_state = game_state.generate_successor(0, action)
+            score = self.minimax(0, new_game_state, 0)
+            if(score>maxScore):
+                maxScore = score
+                bestAction = action
+        return bestAction
+        
 
 
 
