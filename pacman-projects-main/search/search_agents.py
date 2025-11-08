@@ -532,8 +532,22 @@ def food_heuristic(state, problem):
     """
     position, food_grid = state
     "*** YOUR CODE HERE ***"
-    return 0
+    food_list = food_grid.as_list() #Creem la llista de foods
+    if not food_list: #Si la llista està buida return 0
+        return 0
+    min_man = 10000000
+    max_food_dis = 0
+    for food1 in food_list:
+        var = util.manhattan_distance(food1, position)
+        if(var < min_man):
+            min_man = var #Busquem el menjar mes proper al pacman
+        for food2 in food_list:
+            var = util.manhattan_distance(food1, food2)
+            if(var > max_food_dis):
+                max_food_dis = var #Busquem la distància màxima entre dos foods
+    return max_food_dis + min_man #Retornem la suma
 
+        
 
 def simplified_corners_heuristic(state, problem):
     """
