@@ -137,6 +137,7 @@ class MinimaxAgent(MultiAgentSearchAgent):
         """
         "*** YOUR CODE HERE ***"
         util.raise_not_defined()
+        
     
 
 class AlphaBetaAgent(MultiAgentSearchAgent):
