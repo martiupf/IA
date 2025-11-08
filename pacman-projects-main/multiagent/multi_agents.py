@@ -159,8 +159,29 @@ class MinimaxAgent(MultiAgentSearchAgent):
         """
         "*** YOUR CODE HERE ***"
         util.raise_not_defined()
-        
-    
+        agents = game_state.get_num_agents()
+        # pacman
+
+        # for ghosts
+        new_game_state = game_state
+        for i in range(agents):
+            score_min = 10000000
+            score_max = 0
+            for action in game_state.get_legal_actions(i):
+                score = self.evaluation_function(game_state, action)
+                if(score_max < score):
+                    score_max = score
+                    max_action = action
+                if(score_min > score):
+                    score_min = score
+                    min_action = action
+            if(i==0):
+                new_game_state.generate_successor(i, max_action)
+            else:
+                new_game_state.generate_successor(i, min_action)
+        return max_action
+
+
 
 class AlphaBetaAgent(MultiAgentSearchAgent):
     """
