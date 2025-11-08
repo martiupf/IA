@@ -136,7 +136,7 @@ class MinimaxAgent(MultiAgentSearchAgent):
 
     def minimax(self, agent, game_state, depth):
         if (game_state.is_win() or game_state.is_lose() or depth == self.depth):
-            return self.score_evaluation_function(game_state)
+            return ReflexAgent.score_evaluation_function(game_state)
         actions = game_state.get_legal_actions(agent)
         nextAgent = agent+1
         if(nextAgent == game_state.get_num_agents()):
