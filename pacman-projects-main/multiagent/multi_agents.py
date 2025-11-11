@@ -135,13 +135,14 @@ class MinimaxAgent(MultiAgentSearchAgent):
     """
 
     def minimax(self, agent, game_state, depth):
-        if (game_state.is_win() or game_state.is_lose() or depth == self.depth):
-            return ReflexAgent.score_evaluation_function(game_state)
+        if game_state.is_win() or game_state.is_lose() or depth == self.depth:
+            return self.evaluation_function(game_state)
         actions = game_state.get_legal_actions(agent)
-        nextAgent = agent+1
-        if(nextAgent == game_state.get_num_agents()):
+        nextAgent = agent + 1
+        nextDepth = depth
+        if nextAgent == game_state.get_num_agents():
             nextAgent = 0
-            depth+=1
+            nextDepth = depth + 1
         maxScore = float("-inf")
         minScore = float("inf")
         for action in actions:
@@ -149,7 +150,10 @@ class MinimaxAgent(MultiAgentSearchAgent):
             score = self.minimax(nextAgent, successor, nextDepth)
             maxScore = max(score, maxScore)
             minScore = min(score, minScore)
-        return maxScore if agent == 0 else minScore
+        if (agent==0):
+            return maxScore
+        else:
+            return minScore
 
     def get_action(self, game_state):
         """
@@ -182,8 +186,8 @@ class MinimaxAgent(MultiAgentSearchAgent):
         maxScore = float("-inf")
         for action in actions:
             new_game_state = game_state.generate_successor(0, action)
-            score = self.minimax(0, new_game_state, 0)
-            if(score>maxScore):
+            score = self.minimax(1, new_game_state, 0)
+            if score > maxScore:
                 maxScore = score
                 bestAction = action
         return bestAction
