@@ -200,12 +200,45 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
     Your minimax agent with alpha-beta pruning (question 3)
     """
 
+    def max_value(self, state, alpha, beta):
+        v=float("-inf")
+        for action in state.get_legal_actions(0):
+            successor = state.generate_successor(0, action)
+            score = min_value()
+            v = max(v, score)
+            if(v>beta): 
+                return v
+            alpha = max(alpha, v)
+        return v
+
+    def min_value(self, state, alpha, beta, agent):
+        v = float("inf")
+        for action in state.get_legal_actions(agent):
+            successor = state.generate_successor(agent, action)
+            score = self.evaluation_function(successor)
+            v = min(v, score)
+            if(v<alpha): 
+                return v
+            beta = min(beta, v)
+        return v
+
     def get_action(self, game_state):
         """
         Returns the minimax action using self.depth and self.evaluation_function
         """
         "*** YOUR CODE HERE ***"
-        util.raise_not_defined()
+        actions = game_state.get_legal_actions(0)
+        if not actions:
+            return Directions.STOP
+        bestAction = None
+        maxScore = float("-inf")
+        for action in actions:
+            new_game_state = game_state.generate_successor(0, action)
+            score = self.minimax(1, new_game_state, 0)
+            if score > maxScore:
+                maxScore = score
+                bestAction = action
+        return bestAction
 
 
 class ExpectimaxAgent(MultiAgentSearchAgent):
