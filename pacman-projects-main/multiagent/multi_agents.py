@@ -74,24 +74,24 @@ class ReflexAgent(Agent):
         new_scared_times = [ghostState.scared_timer for ghostState in new_ghost_states]
         
         "YOUR CODE HERE"
-        score = successor_game_state.get_score()
-        if(action == Directions.STOP):
-            score -= 10
-        food_list = new_food.as_list()
+        score = successor_game_state.get_score()    #Agafem el score actual
+        if(action == Directions.STOP):              #Penalitzem que es quedi parat
+            score -= 1000
+        food_list = new_food.as_list()              #Obtenim la llista de menjars
         dist_min = 10000
-        for food in food_list:
+        for food in food_list:                      #Calcula la distància al menjar més proper
             value = manhattan_distance(food, new_pos)
             if (dist_min>value):
                 dist_min = value
-        if (dist_min==10000):
+        if (dist_min==10000):                       #Aquest if s'utilitza per fer que el Pac-man es mengi l'últim coco
             dist_min = 0
-        score -= dist_min
-        for ghost in new_ghost_states:
+        score -= dist_min                           #Es penalitza el moviment que deixi al Pac man a més distància del coco més proper
+        for ghost in new_ghost_states:              #Calculem distància als fantasmes
             ghost_pos = ghost.get_position()
             dist = manhattan_distance(new_pos, ghost_pos)
-            if (ghost.scared_timer>0):
+            if (ghost.scared_timer>0):              #Si els fantasmes estàn espantats el Pacman s'apropa
                 score -= dist
-            else:
+            else:                                   #D'altra manera s'allunya
                 if (dist <= 1):
                     return -10000
                 score += dist
@@ -135,24 +135,24 @@ class MinimaxAgent(MultiAgentSearchAgent):
     """
 
     def minimax(self, agent, game_state, depth):
-        if game_state.is_win() or game_state.is_lose() or depth == self.depth:
+        if game_state.is_win() or game_state.is_lose() or depth == self.depth:  #Cas base. Retorna el score actual
             return self.evaluation_function(game_state)
         actions = game_state.get_legal_actions(agent)
         nextAgent = agent + 1
         nextDepth = depth
-        if nextAgent == game_state.get_num_agents():
+        if nextAgent == game_state.get_num_agents():                #Per reiniciar el nombre d'agent que serà el següent a analitzar-se
             nextAgent = 0
             nextDepth = depth + 1
         maxScore = float("-inf")
         minScore = float("inf")
-        for action in actions:
+        for action in actions: #Apliquem l'algoritme minimax amb cada acció possible
             successor = game_state.generate_successor(agent, action)
             score = self.minimax(nextAgent, successor, nextDepth)
             maxScore = max(score, maxScore)
             minScore = min(score, minScore)
-        if (agent==0):
+        if (agent==0): #Si l'agent és el Pacman retorna el maxScore perquè és el nostre node amb valor max
             return maxScore
-        else:
+        else: #Si és fantasma retorna el minScore
             return minScore
 
     def get_action(self, game_state):
@@ -181,9 +181,9 @@ class MinimaxAgent(MultiAgentSearchAgent):
         "*** YOUR CODE HERE ***"
         actions = game_state.get_legal_actions(0)
         maxScore = float("-inf")
-        for action in actions:
+        for action in actions: #Apliquem el minimax de manera que obtenim l'acció amb millor puntuació
             new_game_state = game_state.generate_successor(0, action)
-            score = self.minimax(1, new_game_state, 0)
+            score = self.minimax(1, new_game_state, 0) #Analitzem directament els fantasmes ja que farem un minimax que ens retornarà la score per cada moviment possible del Pacman
             if score > maxScore:
                 maxScore = score
                 bestAction = action
@@ -198,25 +198,25 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
     """
 
     def max_value(self, game_state, alpha, beta, depth):
-        if game_state.is_win() or game_state.is_lose() or depth == self.depth:
+        if game_state.is_win() or game_state.is_lose() or depth == self.depth: #Cas base
             return self.evaluation_function(game_state)
         actions = game_state.get_legal_actions(0)
         nextAgent = 1
         nextDepth = depth
-        if nextAgent == game_state.get_num_agents():
+        if nextAgent == game_state.get_num_agents(): #El mateix que al minimax
             nextAgent = 0
             nextDepth = depth + 1
         v=float("-inf")
         for action in actions:
             successor = game_state.generate_successor(0, action)
-            if (nextAgent == 0):
+            if (nextAgent == 0): #Si l'agent següent és el pacman fem el max_value i si és un fantasma el min_value
                 score = self.max_value(successor, alpha, beta, nextDepth)
             else:
                 score = self.min_value(successor, alpha, beta, nextAgent, nextDepth)
-            v = max(v,score)
-            if v > beta:
+            v = max(v,score) #Actualitzem v amb el max
+            if v > beta: #Fem el beta cut si v>beta
                 return v
-            alpha = max(alpha, v)
+            alpha = max(alpha, v) #Actualitzem alpha
         return v
 
     def min_value(self, game_state, alpha, beta, agent, depth):
@@ -248,21 +248,21 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
         "*** YOUR CODE HERE ***"
         actions = game_state.get_legal_actions(0)
         v = float("-inf")
-        alpha = float("-inf")
+        alpha = float("-inf") #Definim alpha i beta
         beta = float("inf")
         for action in actions:
             new_game_state = game_state.generate_successor(0, action)
-            if(game_state.get_num_agents()+1 > 1):
+            if(game_state.get_num_agents() > 1): 
                 score = self.min_value(new_game_state, alpha, beta, 1, 0)
-            else:
+            else: #Cas en que no hi ha fantasmes
                 score = self.max_value(new_game_state, alpha, beta, 1)
             if score > v:
                 v = score
                 bestAction = action
-            if v > beta:
+            if v > beta: #beta cut
                 break
             alpha = max(alpha, v)
-        return bestAction
+        return bestAction #Retornem la millor acció
 
 
 class ExpectimaxAgent(MultiAgentSearchAgent):
