@@ -180,9 +180,6 @@ class MinimaxAgent(MultiAgentSearchAgent):
         """
         "*** YOUR CODE HERE ***"
         actions = game_state.get_legal_actions(0)
-        if not actions:
-            return Directions.STOP
-        bestAction = None
         maxScore = float("-inf")
         for action in actions:
             new_game_state = game_state.generate_successor(0, action)
@@ -200,24 +197,46 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
     Your minimax agent with alpha-beta pruning (question 3)
     """
 
-    def max_value(self, state, alpha, beta):
+    def max_value(self, game_state, alpha, beta, depth):
+        if game_state.is_win() or game_state.is_lose() or depth == self.depth:
+            return self.evaluation_function(game_state)
+        actions = game_state.get_legal_actions(0)
+        nextAgent = 1
+        nextDepth = depth
+        if nextAgent == game_state.get_num_agents():
+            nextAgent = 0
+            nextDepth = depth + 1
         v=float("-inf")
-        for action in state.get_legal_actions(0):
-            successor = state.generate_successor(0, action)
-            score = min_value()
-            v = max(v, score)
-            if(v>beta): 
+        for action in actions:
+            successor = game_state.generate_successor(0, action)
+            if (nextAgent == 0):
+                score = self.max_value(successor, alpha, beta, nextDepth)
+            else:
+                score = self.min_value(successor, alpha, beta, nextAgent, nextDepth)
+            v = max(v,score)
+            if v > beta:
                 return v
             alpha = max(alpha, v)
         return v
 
-    def min_value(self, state, alpha, beta, agent):
-        v = float("inf")
-        for action in state.get_legal_actions(agent):
-            successor = state.generate_successor(agent, action)
-            score = self.evaluation_function(successor)
-            v = min(v, score)
-            if(v<alpha): 
+    def min_value(self, game_state, alpha, beta, agent, depth):
+        if game_state.is_win() or game_state.is_lose() or depth == self.depth:
+            return self.evaluation_function(game_state)
+        actions = game_state.get_legal_actions(agent)
+        nextAgent = agent + 1
+        nextDepth = depth
+        if nextAgent == game_state.get_num_agents():
+            nextAgent = 0
+            nextDepth = depth + 1
+        v=float("inf")
+        for action in actions:
+            successor = game_state.generate_successor(agent, action)
+            if (nextAgent == 0):
+                score = self.max_value(successor, alpha, beta, nextDepth)
+            else:
+                score = self.min_value(successor, alpha, beta, nextAgent, nextDepth)
+            v = min(v,score)
+            if v < alpha:
                 return v
             beta = min(beta, v)
         return v
@@ -228,16 +247,21 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
         """
         "*** YOUR CODE HERE ***"
         actions = game_state.get_legal_actions(0)
-        if not actions:
-            return Directions.STOP
-        bestAction = None
-        maxScore = float("-inf")
+        v = float("-inf")
+        alpha = float("-inf")
+        beta = float("inf")
         for action in actions:
             new_game_state = game_state.generate_successor(0, action)
-            score = self.minimax(1, new_game_state, 0)
-            if score > maxScore:
-                maxScore = score
+            if(game_state.get_num_agents()+1 > 1):
+                score = self.min_value(new_game_state, alpha, beta, 1, 0)
+            else:
+                score = self.max_value(new_game_state, alpha, beta, 1)
+            if score > v:
+                v = score
                 bestAction = action
+            if v > beta:
+                break
+            alpha = max(alpha, v)
         return bestAction
 
 
