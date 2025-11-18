@@ -26,43 +26,46 @@ def question2():
     # worth it. This is obtained by lowering the noise value and ensuring that the agent
     # always takes the desired action (left or right).
     answer_discount = 0.9
-    answer_noise = 0
+    answer_noise = 0 #Cambiem el noise a 0 perquè no hi hagi possibilitats de caure en un terminal state negatiu per mala sort.
     return answer_discount, answer_noise
 
 def question3a():
-    answer_discount = 0.3
-    answer_noise = 0
-    answer_living_reward = 0
+    answer_discount = 0.3 #Valor baix per buscar la recompensa més propera (+1)
+    answer_noise = 0 #Valor 0 perquè no hi hagi probabilitats de caure en el cliff
+    answer_living_reward = 0 #0 perquè no influeixi el nombre de moviments per arribar a un terminal state
     return answer_discount, answer_noise, answer_living_reward
     # If not possible, return 'NOT POSSIBLE'
 
 def question3b():
-    answer_discount = 0.3
-    answer_noise = 0.2
-    answer_living_reward = 0
+    answer_discount = 0.3 #Valor baix per buscar la recompensa més propera (+1)
+    answer_noise = 0.2 #Valor alt de noise per tal que la IA prefereixi anar per la part de dalt per no jugarse-la anant a prop de la cliff 
+    answer_living_reward = 0 #0 perquè no influeixi el nombre de moviments per arribar a un terminal state
     return answer_discount, answer_noise, answer_living_reward
     # If not possible, return 'NOT POSSIBLE'
 
 def question3c():
-    answer_discount = 0.9
-    answer_noise = 0
-    answer_living_reward = 0
+    answer_discount = 0.9 #Valor elevat perquè busqui la recompensa més alta a llarg termini (+10)
+    answer_noise = 0 #Valor 0 perquè no hi hagi probabilitats de caure en el cliff
+    answer_living_reward = 0 #0 perquè no influeixi el nombre de moviments per arribar a un terminal state
     return answer_discount, answer_noise, answer_living_reward
     # If not possible, return 'NOT POSSIBLE'
 
 def question3d():
-    answer_discount = 0.9
-    answer_noise = 0.2
-    answer_living_reward = 0
+    answer_discount = 0.9 #Valor elevat perquè busqui la recompensa més alta a llarg termini (+10)
+    answer_noise = 0.2 #Valor alt de noise per tal que la IA prefereixi anar per la part de dalt per no jugarse-la anant a prop de la cliff
+    answer_living_reward = 0 #0 perquè no influeixi el nombre de moviments per arribar a un terminal state
     return answer_discount, answer_noise, answer_living_reward
     # If not possible, return 'NOT POSSIBLE'
 
 def question3e():
     answer_discount = 1
     answer_noise = 0
-    answer_living_reward = 1
+    answer_living_reward = 1 #Perquè la recompensa de no arribar a un terminal state sigui més gran que acabar el joc
     return answer_discount, answer_noise, answer_living_reward
     # If not possible, return 'NOT POSSIBLE'
+
+def question6():
+    return 'NOT POSSIBLE'
 
 def question8():
     answer_epsilon = None

@@ -67,13 +67,13 @@ class ValueIterationAgent(ValueEstimationAgent):
         """
 
         "*** YOUR CODE HERE ***"
-        for i in range(self.iterations):
-            new_values = util.Counter()
-            for state in self.mdp.get_states():
-                actions = self.mdp.get_possible_actions(state)
-                if not actions:
+        for i in range(self.iterations): #Recorrem totes les iteracions
+            new_values = util.Counter() #Creem un nou diccionari de valors perquè així el substituirem per l'anterior en el següent pas
+            for state in self.mdp.get_states(): #Recorrem tots els estats de la grid
+                actions = self.mdp.get_possible_actions(state) #Mirem les accions possibles des d'aquell estat
+                if not actions: #Quan es terminal o no hi han accions es manté el valor perquè els terminals no canvïin de valor
                     new_values[state] = self.values[state]
-                else:
+                else: #Actualitzem els valors agafant el Q-value de la millor acció
                     action_selected = self.compute_action_from_values(state)
                     new_values[state] = self.compute_q_value_from_values(state, action_selected)
 
@@ -92,11 +92,11 @@ class ValueIterationAgent(ValueEstimationAgent):
         """
         "*** YOUR CODE HERE ***"
         q_value = 0
-        transitions = self.mdp.get_transition_states_and_probs(state, action)
+        transitions = self.mdp.get_transition_states_and_probs(state, action) #Guardem les transicions i les seves probabilitats
 
         for next_state, prob in transitions:
-            reward = self.mdp.get_reward(state, action, next_state)
-            q_value+=prob*(reward+self.discount*self.values[next_state])
+            reward = self.mdp.get_reward(state, action, next_state) #Agafem el reward
+            q_value+=prob*(reward+self.discount*self.values[next_state]) #Apliquem la fórmula del Q-value
         return q_value
 
     def compute_action_from_values(self, state):
@@ -109,11 +109,11 @@ class ValueIterationAgent(ValueEstimationAgent):
           terminal state, you should return None.
         """
         "*** YOUR CODE HERE ***"
-        possible_actions = self.mdp.get_possible_actions(state)
-        if len(possible_actions) == 0:
+        possible_actions = self.mdp.get_possible_actions(state) #Mirem les accions possibles des d'aquell state
+        if len(possible_actions) == 0: #En cas que no n'hi hagin (terminal state) retornem None
             return None
-        qmax = float("-inf")
-        for action in possible_actions:
+        qmax = float("-inf") #Inicialitzem qmax amb el valor més petit possible
+        for action in possible_actions: #Recorrem totes les accions possibles i mirem quina té el Q-value més gran
             q = self.compute_q_value_from_values(state, action)
             if(q>qmax):
                 qmax = q
