@@ -43,6 +43,7 @@ class QLearningAgent(ReinforcementAgent):
         ReinforcementAgent.__init__(self, **args)
 
         "*** YOUR CODE HERE ***"
+        self.qvalues = util.Counter() #Creem un diccionari pels q-values
 
     def get_q_value(self, state, action):
         """
@@ -51,18 +52,24 @@ class QLearningAgent(ReinforcementAgent):
           or the Q node value otherwise
         """
         "*** YOUR CODE HERE ***"
-        util.raise_not_defined()
+        return self.qvalues[(state, action)] #retornem el q-value del state amb l'acció
 
 
     def compute_value_from_q_values(self, state):
         """
-          Returns max_action Q(state,action)
+          Returns max_action's Q(state,action)
           where the max is over legal actions.  Note that if
           there are no legal actions, which is the case at the
           terminal state, you should return a value of 0.0.
         """
         "*** YOUR CODE HERE ***"
-        util.raise_not_defined()
+        legal_actions = self.get_legal_actions(state) #Accions possibles
+        if len(legal_actions) == 0: #Si no hi ha accions (terminal) retornem 0
+            return 0.0
+        q_value_max = float("-inf")
+        for action in legal_actions: #Calculem el major q-value
+            q_value_max = max(q_value_max, self.get_q_value(state, action))
+        return q_value_max
 
     def compute_action_from_q_values(self, state):
         """
@@ -71,7 +78,20 @@ class QLearningAgent(ReinforcementAgent):
           you should return None.
         """
         "*** YOUR CODE HERE ***"
-        util.raise_not_defined()
+        legal_actions = self.get_legal_actions(state)
+        if len(legal_actions) == 0:
+            return None
+        q_value_max = float("-inf")
+        best_action = []
+        for action in legal_actions:
+            actual_q_value = self.get_q_value(state, action)
+            if q_value_max < actual_q_value: #En cas que el q-value sigui més gran
+                best_action = [] #Reiniciem la llista
+                q_value_max = actual_q_value #Actualitzem el q-value màxim
+                best_action.append(action) #Afegim l'acció corresponent
+            elif q_value_max == actual_q_value:
+                best_action.append(action) #Si el q-value coincideix amb el màxim fiquem les dues accions en la mateixa llista
+        return random.choice(best_action) #Si hi ha més d'una acció amb el mateix q-value màxim retorna una d'elles aleatòriament
 
     def get_action(self, state):
         """
@@ -88,8 +108,11 @@ class QLearningAgent(ReinforcementAgent):
         legal_actions = self.get_legal_actions(state)
         action = None
         "*** YOUR CODE HERE ***"
-        util.raise_not_defined()
-        
+        if len(legal_actions) == 0:
+            return action
+        if util.flip_coin(self.epsilon): #Cada vegada que surti epsilon
+            return random.choice(legal_actions) #Seleccionem una acció aleatòriament
+        return self.compute_action_from_q_values(state) #Si no, la seleccionem segons el q-value
 
     def update(self, state, action, next_state, reward):
         """
@@ -101,7 +124,10 @@ class QLearningAgent(ReinforcementAgent):
           it will be called on your behalf
         """
         "*** YOUR CODE HERE ***"
-        util.raise_not_defined()
+        current_qvalue = self.get_q_value(state, action) #Agafem el q-value actual
+        next_qvalue = self.compute_value_from_q_values(next_state) #Calculem el q-value de la següent iteració 
+        new_value = (1 - self.alpha) * current_qvalue + self.alpha * (reward + self.discount * next_qvalue) #Apliquem la fórmula
+        self.qvalues[(state, action)] = new_value #Actualitzem el q-value
 
     def get_policy(self, state):
         return self.compute_action_from_q_values(state)

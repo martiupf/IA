@@ -64,14 +64,18 @@ def question3e():
     return answer_discount, answer_noise, answer_living_reward
     # If not possible, return 'NOT POSSIBLE'
 
-def question6():
+def question8(): #EX6
     return 'NOT POSSIBLE'
+    #Justificació: No hi ha cap valor de epsilon ni de gamma que aconsegueixi
+    #que l'agent que testeja el pont el creui les suficients vegades com perquè
+    #el q-value de creuar-lo sigui més gran que el de acabar el joc a l'esquerra
+    #del pont.
 
-def question8():
-    answer_epsilon = None
-    answer_learning_rate = None
-    return answer_epsilon, answer_learning_rate
-    # If not possible, return 'NOT POSSIBLE'
+# def question8():
+#     answer_epsilon = None
+#     answer_learning_rate = None
+#     return answer_epsilon, answer_learning_rate
+#     # If not possible, return 'NOT POSSIBLE'
 
 if __name__ == '__main__':
     print('Answers to analysis questions:')
